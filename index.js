@@ -15,8 +15,9 @@ app.use(cors()); // Enable CORS for all routes
 
 // Define server port and MongoDB URI from environment variables
 const PORT = process.env.PORT || 5000;
-const MONGO_URI=`mongodb+srv://thakurraakrshitt:${encodeURIComponent(process.env.AakrshitThakurUSER_PSD)}@cluster0.j79ec.mongodb.net/FlashCardMVP_DB/?retryWrites=true&w=majority&appName=Cluster0`;
-console.log(MONGO_URI);
+const MONGO_URI = `mongodb+srv://thakurraakrshitt:${encodeURIComponent(
+  process.env.AakrshitThakurUSER_PSD
+)}@cluster0.j79ec.mongodb.net/FlashCardMVP_DB?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Connect to MongoDB
 mongoose
@@ -56,6 +57,7 @@ const auth = (req, res, next) => {
     req.user = decoded.user; // Attach the decoded user to the request object
     next(); // Proceed to the next middleware or route handler
   } catch (err) {
+    console.error(err);
     res.status(401).json({ msg: "Token is not valid" }); // Deny access if token is invalid
   }
 };
@@ -85,6 +87,7 @@ app.post("/register", async (req, res) => {
       }
     );
   } catch (err) {
+    console.error(err);
     res.status(500).send("Server error"); // Handle server errors
   }
 });
@@ -110,6 +113,7 @@ app.post("/login", async (req, res) => {
       }
     );
   } catch (err) {
+    console.error(err);
     res.status(500).send("Server error"); // Handle server errors
   }
 });
@@ -122,6 +126,7 @@ app.post("/flashcards", auth, async (req, res) => {
     await newFlashcard.save(); // Save the flashcard to the database
     res.json(newFlashcard); // Return the saved flashcard
   } catch (err) {
+    console.error(err);
     res.status(500).send("Server error"); // Handle server errors
   }
 });
@@ -132,6 +137,7 @@ app.get("/flashcards", auth, async (req, res) => {
     const flashcards = await Flashcard.find({ user: req.user.id }); // Find all flashcards for the user
     res.json(flashcards); // Return the flashcards
   } catch (err) {
+    console.error(err);
     res.status(500).send("Server error"); // Handle server errors
   }
 });
@@ -143,6 +149,7 @@ app.get("/flashcards/:id", auth, async (req, res) => {
     const flashcard = await Flashcard.findById(id); // Finding a flashcard
     res.json(flashcard); // Return the flashcard
   } catch (err) {
+    console.error(err);
     res.status(500).send("Server error"); // Handle server errors
   }
 });
@@ -173,6 +180,7 @@ app.put("/flashcards/:id", auth, async (req, res) => {
     await flashcard.save(); // Save the updated flashcard
     res.json(flashcard); // Return the updated flashcard
   } catch (err) {
+    console.error(err);
     res.status(500).send("Server error"); // Handle server errors
   }
 });
@@ -184,6 +192,7 @@ app.delete("/flashcards/:id", auth, async (req, res) => {
     await Flashcard.findByIdAndDelete(id); // Delete the flashcard by ID
     res.json({ msg: "Flashcard deleted" }); // Return success message
   } catch (err) {
+    console.error(err);
     res.status(500).send("Server error"); // Handle server errors
   }
 });
